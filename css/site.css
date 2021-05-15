@@ -1,0 +1,101 @@
+body {
+    background-image: url(/BackgroundImage/dino-reichmuth--ftqFUopdDs-unsplash.jpg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    min-height: 100%;
+}
+
+.todo {
+    border-width: 1px;
+    border-style: solid;
+    border-color: azure;
+    color: azure;
+    width: 40%;
+    text-align: center;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0,0,0, 0.5);
+}
+
+.completed {
+    float: left;
+    border-width: 1px;
+    border-style: solid;
+    border-color: azure;
+    color: azure;
+    width: 40%;
+    text-align: center;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0,0,0, 0.5);
+}
+
+.todo-h3 {
+    margin-left: 15%;
+    font-size: 1.4em;
+    float: left;
+    color: azure;
+    border-width: 1px;
+    border-style: solid;
+    width: 15%;
+    height: 5%;
+    border-color: azure;
+    text-align: center;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0,0,0, 0.65);
+}
+
+.completed-h3 {
+    margin-left: 40%;
+    font-size: 1.4em;
+    float: left;
+    color: azure;
+    border-width: 1px;
+    border-style: solid;
+    width: 15%;
+    height: 5%;
+    border-color: azure;
+    text-align: center;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0,0,0, 0.65);
+}
+
+h1 {
+    margin-left: 45%;
+    margin-bottom: 2em;
+}
+
+label {
+    font-size: 1.3em;
+    width: fit-content;
+    margin-left: 40%;
+    margin-right: 0.5em;
+    display: inline-block;
+    text-align: center;
+}
+
+.title-box {
+    margin-left: 2.4em;
+}
+
+.date-box {
+    margin-right: .5em;
+}
+
+input[type=text] {
+    margin-bottom: 4em;
+}
+
+input[type=button] {
+    height: 30px;
+    width: auto;
+    margin-top: 4%;
+    margin-left: 46%;
+}
+
+input[type=checkbox] {
+    margin-top: 1%;
+    width: 19px;
+    height: 17px;
+    display: inline-block;
+}
