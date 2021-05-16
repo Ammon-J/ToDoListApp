@@ -5,6 +5,7 @@ window.onload = function() {
 
 function main() {
     if(isValid()) {
+        clearErrorSpans();
         let item = getToDoItem()
         displayToDoItem(item);
     }
@@ -25,7 +26,38 @@ item.isCompleted = false;
  * Check form data is valid
  */
 function isValid():boolean {
-    return true;
+    // Clear errors
+    clearErrorSpans();
+
+    let isValid:boolean = true;
+
+    let titleBox = <HTMLInputElement>getInput("title");
+    let titleSpan = getInput("title-span");
+
+    if(titleBox.value == "") {
+        isValid = false;
+        titleSpan.innerText = "Title is required";
+    }
+
+    let dateBox = <HTMLInputElement>getInput("due-date");
+    let dateSpan = getInput("date-span");
+
+    if(dateBox.value == "") {
+        isValid = false;
+        dateSpan.innerText = "Due date is required";
+    }
+
+    return isValid;
+}
+
+/**
+ * If everything is valid clear the error messages
+ */
+function clearErrorSpans() {
+    let allErrorSpans = document.querySelectorAll("span");
+    for (var i = 0; i < allErrorSpans.length; i++) {
+        allErrorSpans[i].innerHTML = "";
+    }
 }
 
 /**
@@ -42,10 +74,6 @@ function getToDoItem():ToDoItem {
     // Get the due date
     let dueDateInput = getInput("due-date");
     myItem.dueDate = new Date(dueDateInput.value);
-
-    // Get isCompleted 
-    let isCompleted = getInput("complete");
-    myItem.isCompleted = isCompleted.checked; 
 
     return myItem;
 }

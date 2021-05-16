@@ -4,6 +4,7 @@ window.onload = function () {
 };
 function main() {
     if (isValid()) {
+        clearErrorSpans();
         var item_1 = getToDoItem();
         displayToDoItem(item_1);
     }
@@ -17,7 +18,27 @@ var item = new ToDoItem();
 item.dueDate = new Date(2021, 6, 1);
 item.isCompleted = false;
 function isValid() {
-    return true;
+    clearErrorSpans();
+    var isValid = true;
+    var titleBox = getInput("title");
+    var titleSpan = getInput("title-span");
+    if (titleBox.value == "") {
+        isValid = false;
+        titleSpan.innerText = "Title is required";
+    }
+    var dateBox = getInput("due-date");
+    var dateSpan = getInput("date-span");
+    if (dateBox.value == "") {
+        isValid = false;
+        dateSpan.innerText = "Due date is required";
+    }
+    return isValid;
+}
+function clearErrorSpans() {
+    var allErrorSpans = document.querySelectorAll("span");
+    for (var i = 0; i < allErrorSpans.length; i++) {
+        allErrorSpans[i].innerHTML = "";
+    }
 }
 function getToDoItem() {
     var myItem = new ToDoItem();
@@ -25,8 +46,6 @@ function getToDoItem() {
     myItem.title = titleBox.value;
     var dueDateInput = getInput("due-date");
     myItem.dueDate = new Date(dueDateInput.value);
-    var isCompleted = getInput("complete");
-    myItem.isCompleted = isCompleted.checked;
     return myItem;
 }
 function getInput(id) {
