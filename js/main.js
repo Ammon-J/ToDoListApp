@@ -42,6 +42,7 @@ function displayToDoItem(item) {
     if (item.isCompleted) {
         itemDiv.classList.add("completed");
     }
+    itemDiv.onclick = markAsComplete;
     itemDiv.appendChild(itemText);
     itemDiv.appendChild(itemDate);
     if (item.isCompleted) {
@@ -52,4 +53,10 @@ function displayToDoItem(item) {
         var incompleteTasks = document.getElementById("incompleted-items");
         incompleteTasks.appendChild(itemDiv);
     }
+}
+function markAsComplete() {
+    var itemDiv = this;
+    itemDiv.classList.add("completed");
+    var completedItems = document.getElementById("complete-items");
+    completedItems.appendChild(itemDiv);
 }

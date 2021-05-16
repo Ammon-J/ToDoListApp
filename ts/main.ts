@@ -74,6 +74,8 @@ function displayToDoItem(item:ToDoItem) {
         itemDiv.classList.add("completed");
     }
 
+    itemDiv.onclick = markAsComplete;
+
     // Add the the task to the completed div and incomplete div
     itemDiv.appendChild(itemText);
     itemDiv.appendChild(itemDate);
@@ -87,6 +89,14 @@ function displayToDoItem(item:ToDoItem) {
         let incompleteTasks = document.getElementById("incompleted-items");
         incompleteTasks.appendChild(itemDiv);
     }
+}
+
+function markAsComplete() {
+    let itemDiv = <HTMLElement>this;
+    itemDiv.classList.add("completed");
+
+    let completedItems = document.getElementById("complete-items");
+    completedItems.appendChild(itemDiv);
 }
 
 // Allow user to mark a ToDoItem as completed
