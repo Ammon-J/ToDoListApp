@@ -14,10 +14,12 @@ body {
 }
 
 .complete-items {
+    margin-left: 56%;
     margin-top: 6%;
 }
 
 .todo {
+    cursor: pointer;
     width: 80%;
     margin-bottom: 2%;
     margin-left: 3%;
@@ -32,14 +34,13 @@ body {
 }
 
 .completed {
-    float: right;
-    margin-right: 3%;
+    width: 90%;
+    text-decoration: line-through;
     border-width: 1px;
     border-style: solid;
     border-radius: 15px;
     border-color: azure;
     color: azure;
-    width: 40%;
     text-align: center;
     background-color: rgb(0, 0, 0);
     background-color: rgba(0,0,0, 0.5);
@@ -91,10 +92,12 @@ label {
 }
 
 .title-box {
+    margin-top: 2%;
     margin-left: 2.4em;
 }
 
 .date-box {
+    margin-top: 2%;
     margin-right: .5em;
 }
 
@@ -105,8 +108,9 @@ input[type=text] {
 input[type=button] {
     height: 30px;
     width: auto;
-    margin-top: 4%;
+    margin-top: 2%;
     margin-left: 46%;
+    margin-bottom: 2%;
 }
 
 input[type=checkbox] {
