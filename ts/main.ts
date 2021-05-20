@@ -1,6 +1,8 @@
 window.onload = function() {
     let addItem = document.getElementById("add");
     addItem.onclick = main;
+
+    
 }
 
 function main() {
@@ -8,6 +10,7 @@ function main() {
         clearErrorSpans();
         let item = getToDoItem()
         displayToDoItem(item);
+        clearForm();
     }
 }
 
@@ -21,6 +24,15 @@ let item = new ToDoItem();
 // item.title = "Testing";
 item.dueDate = new Date(2021, 6, 1);
 item.isCompleted = false;
+
+
+/**
+ * Clear the form when an item has been added
+ */
+function clearForm() {
+    getInput("title").value = "";
+    getInput("due-date").value = "";
+}
 
 /**
  * Check form data is valid
@@ -87,8 +99,17 @@ function getInput(id):HTMLInputElement {
  * @param item ToDoItem
  */
 function displayToDoItem(item:ToDoItem) {
+    // Create an edit button
+    let editBtn = document.createElement("button");
+    editBtn.innerHTML = "Edit";
+    editBtn.className = "edit-button";
+
+    // Call editTask() if editbtn was clicked
+    editBtn.onclick = editTask;
+
     // Create the title of the task
     let itemText = document.createElement("h3");
+    itemText.className = "todo-title"
     itemText.innerText = item.title;
 
     // Create the due date
@@ -97,16 +118,18 @@ function displayToDoItem(item:ToDoItem) {
 
     // Create a div for incomplete and completed tasks
     let itemDiv = document.createElement("div");
+    itemDiv.id = "itemDivId";
     itemDiv.classList.add("todo");
     if(item.isCompleted) {
         itemDiv.classList.add("completed");
     }
 
-    itemDiv.onclick = markAsComplete;
+    itemText.onclick = markAsComplete;
 
-    // Add the the task to the completed div and incomplete div
+    // Add the task to the completed div and incomplete div
     itemDiv.appendChild(itemText);
     itemDiv.appendChild(itemDate);
+    itemDiv.appendChild(editBtn);
 
     if(item.isCompleted) {
         let completedTask = document.getElementById("complete-items");
@@ -119,12 +142,39 @@ function displayToDoItem(item:ToDoItem) {
     }
 }
 
+// Allow user to mark a ToDoItem as completed
 function markAsComplete() {
-    let itemDiv = <HTMLElement>this;
+    let itemDiv = getInput("itemDivId");
     itemDiv.classList.add("completed");
 
     let completedItems = document.getElementById("complete-items");
     completedItems.appendChild(itemDiv);
 }
 
-// Allow user to mark a ToDoItem as completed
+function editTask() {
+    // Get the curr to do item
+    let itemDiv = getInput("itemDivId");
+
+    // Remove buttons of already created
+    if(getInput("delete-todo")) {
+        let deleteBtn = getInput("delete-todo");
+        deleteBtn.remove();
+    }
+
+    let deleteBtn = document.createElement("button");
+    deleteBtn.innerHTML = "Delete";
+    deleteBtn.className = "delete-todo";
+    deleteBtn.id = "delete-todo";
+    itemDiv.appendChild(deleteBtn);
+    
+    
+    
+}
+
+function markToDo() {
+    let itemDiv = getInput("itemDivId");
+    itemDiv.classList.add("todo");
+
+    let incompletedItems = document.getElementById("incompleted-items");
+    incompletedItems.appendChild(itemDiv);
+}

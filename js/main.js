@@ -7,6 +7,7 @@ function main() {
         clearErrorSpans();
         var item_1 = getToDoItem();
         displayToDoItem(item_1);
+        clearForm();
     }
 }
 var ToDoItem = (function () {
@@ -17,6 +18,10 @@ var ToDoItem = (function () {
 var item = new ToDoItem();
 item.dueDate = new Date(2021, 6, 1);
 item.isCompleted = false;
+function clearForm() {
+    getInput("title").value = "";
+    getInput("due-date").value = "";
+}
 function isValid() {
     clearErrorSpans();
     var isValid = true;
@@ -52,18 +57,25 @@ function getInput(id) {
     return document.getElementById(id);
 }
 function displayToDoItem(item) {
+    var editBtn = document.createElement("button");
+    editBtn.innerHTML = "Edit";
+    editBtn.className = "edit-button";
+    editBtn.onclick = editTask;
     var itemText = document.createElement("h3");
+    itemText.className = "todo-title";
     itemText.innerText = item.title;
     var itemDate = document.createElement("p");
     itemDate.innerText = item.dueDate.toString();
     var itemDiv = document.createElement("div");
+    itemDiv.id = "itemDivId";
     itemDiv.classList.add("todo");
     if (item.isCompleted) {
         itemDiv.classList.add("completed");
     }
-    itemDiv.onclick = markAsComplete;
+    itemText.onclick = markAsComplete;
     itemDiv.appendChild(itemText);
     itemDiv.appendChild(itemDate);
+    itemDiv.appendChild(editBtn);
     if (item.isCompleted) {
         var completedTask = document.getElementById("complete-items");
         completedTask.appendChild(itemDiv);
@@ -74,8 +86,26 @@ function displayToDoItem(item) {
     }
 }
 function markAsComplete() {
-    var itemDiv = this;
+    var itemDiv = getInput("itemDivId");
     itemDiv.classList.add("completed");
     var completedItems = document.getElementById("complete-items");
     completedItems.appendChild(itemDiv);
+}
+function editTask() {
+    var itemDiv = getInput("itemDivId");
+    if (getInput("delete-todo")) {
+        var deleteBtn_1 = getInput("delete-todo");
+        deleteBtn_1.remove();
+    }
+    var deleteBtn = document.createElement("button");
+    deleteBtn.innerHTML = "Delete";
+    deleteBtn.className = "delete-todo";
+    deleteBtn.id = "delete-todo";
+    itemDiv.appendChild(deleteBtn);
+}
+function markToDo() {
+    var itemDiv = getInput("itemDivId");
+    itemDiv.classList.add("todo");
+    var incompletedItems = document.getElementById("incompleted-items");
+    incompletedItems.appendChild(itemDiv);
 }
