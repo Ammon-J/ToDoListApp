@@ -19,7 +19,6 @@ body {
 }
 
 .todo {
-    cursor: pointer;
     width: 80%;
     margin-bottom: 2%;
     margin-left: 3%;
@@ -46,7 +45,17 @@ body {
     background-color: rgba(0,0,0, 0.5);
 }
 
+.edit-button {
+    margin-bottom: 1%;
+}
+
+.mark-todo {
+    margin-left: 15%;
+    margin-bottom: 1%;
+}
+
 .todo-h3 {
+    cursor: pointer;
     display: inline;
     margin-bottom: 10%;
     margin-right: 0%;
@@ -63,7 +72,12 @@ body {
     background-color: rgba(0,0,0, 0.68);
 }
 
+.todo-title {
+    cursor: pointer;
+}
+
 .completed-h3 {
+    cursor: pointer;
     display: inline;
     margin-left: 45vw;
     font-size: 1.4em;
@@ -92,11 +106,13 @@ label {
 }
 
 .title-box {
+    cursor: pointer;
     margin-top: 2%;
     margin-left: 2.4em;
 }
 
 .date-box {
+    cursor: pointer;
     margin-top: 2%;
     margin-right: .5em;
 }
@@ -111,11 +127,4 @@ input[type=button] {
     margin-top: 2%;
     margin-left: 46%;
     margin-bottom: 2%;
-}
-
-input[type=checkbox] {
-    margin-top: 1%;
-    width: 19px;
-    height: 17px;
-    display: inline-block;
 }
