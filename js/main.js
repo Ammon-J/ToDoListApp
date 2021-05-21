@@ -1,12 +1,23 @@
 window.onload = function () {
     var addItem = document.getElementById("add");
     addItem.onclick = main;
+    loadSavedItems();
 };
+function loadSavedItems() {
+    var itemArray = getToDoItems();
+    if (itemArray != null) {
+        for (var i = 0; i < itemArray.length; i++) {
+            var currItem = itemArray[i];
+            displayToDoItem(currItem);
+        }
+    }
+}
 function main() {
     if (isValid()) {
         clearErrorSpans();
         var item_1 = getToDoItem();
         displayToDoItem(item_1);
+        saveToDo(item_1);
         clearForm();
     }
 }
@@ -62,17 +73,20 @@ function displayToDoItem(item) {
     editBtn.className = "edit-button";
     editBtn.onclick = editTask;
     var itemText = document.createElement("h3");
-    itemText.className = "todo-title";
+    itemText.id = "item-text";
     itemText.innerText = item.title;
     var itemDate = document.createElement("p");
     itemDate.innerText = item.dueDate.toString();
+    var dueDate = new Date(item.dueDate.toString());
+    itemDate.innerText = dueDate.toDateString();
     var itemDiv = document.createElement("div");
-    itemDiv.id = "itemDivId";
+    itemDiv.id = "taskId";
+    itemDiv.setAttribute("data-todo-title", item.title);
+    itemDiv.ondblclick = toggleComplete;
     itemDiv.classList.add("todo");
     if (item.isCompleted) {
         itemDiv.classList.add("completed");
     }
-    itemText.onclick = markAsComplete;
     itemDiv.appendChild(itemText);
     itemDiv.appendChild(itemDate);
     itemDiv.appendChild(editBtn);
@@ -81,31 +95,59 @@ function displayToDoItem(item) {
         completedTask.appendChild(itemDiv);
     }
     else {
-        var incompleteTasks = document.getElementById("incompleted-items");
+        var incompleteTasks = document.getElementById("uncompleted-items");
         incompleteTasks.appendChild(itemDiv);
     }
 }
-function markAsComplete() {
-    var itemDiv = getInput("itemDivId");
-    itemDiv.classList.add("completed");
-    var completedItems = document.getElementById("complete-items");
-    completedItems.appendChild(itemDiv);
+function toggleComplete() {
+    var itemDiv = this;
+    if (itemDiv.classList.contains("completed")) {
+        itemDiv.classList.remove("completed");
+        var incompleteItems = getInput("uncompleted-items");
+        incompleteItems.appendChild(itemDiv);
+    }
+    else {
+        itemDiv.classList.add("completed");
+        var completedItems = getInput("complete-items");
+        completedItems.appendChild(itemDiv);
+    }
+    var allTodos = getToDoItems();
+    var currentTodoTitle = itemDiv.getAttribute("data-todo-title");
+    for (var index = 0; index < allTodos.length; index++) {
+        var nextTodo = allTodos[index];
+        if (nextTodo.title == currentTodoTitle) {
+            nextTodo.isCompleted = !nextTodo.isCompleted;
+        }
+    }
+    saveAllTasks(allTodos);
+}
+function saveAllTasks(allTodos) {
+    localStorage.setItem(todokey, "");
+    var allItemsString = JSON.stringify(allTodos);
+    localStorage.setItem(todokey, allItemsString);
+}
+function saveToDo(item) {
+    var currItems = getToDoItems();
+    if (currItems == null) {
+        currItems = new Array();
+    }
+    currItems.push(item);
+    var currItemsString = JSON.stringify(currItems);
+    localStorage.setItem(todokey, currItemsString);
 }
 function editTask() {
-    var itemDiv = getInput("itemDivId");
-    if (getInput("delete-todo")) {
-        var deleteBtn_1 = getInput("delete-todo");
-        deleteBtn_1.remove();
-    }
-    var deleteBtn = document.createElement("button");
-    deleteBtn.innerHTML = "Delete";
-    deleteBtn.className = "delete-todo";
-    deleteBtn.id = "delete-todo";
-    itemDiv.appendChild(deleteBtn);
+    var itemDiv = this;
+    var title = getInput("item-text").value;
+    var titleBox = getInput("title");
+    titleBox.value = title;
 }
-function markToDo() {
-    var itemDiv = getInput("itemDivId");
-    itemDiv.classList.add("todo");
-    var incompletedItems = document.getElementById("incompleted-items");
-    incompletedItems.appendChild(itemDiv);
+function deleteItem() {
+    var itemDiv = getInput("taskId");
+    itemDiv.classList.remove("todo");
+}
+var todokey = "todo";
+function getToDoItems() {
+    var itemString = localStorage.getItem(todokey);
+    var item = JSON.parse(itemString);
+    return item;
 }

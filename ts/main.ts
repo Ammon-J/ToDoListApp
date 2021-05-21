@@ -2,7 +2,18 @@ window.onload = function() {
     let addItem = document.getElementById("add");
     addItem.onclick = main;
 
-    
+    loadSavedItems();
+}
+
+function loadSavedItems() {
+    let itemArray = getToDoItems();
+
+    if(itemArray != null) {
+        for(let i = 0; i < itemArray.length; i++) {
+            let currItem = itemArray[i];
+            displayToDoItem(currItem);
+        }
+    }
 }
 
 function main() {
@@ -10,6 +21,7 @@ function main() {
         clearErrorSpans();
         let item = getToDoItem()
         displayToDoItem(item);
+        saveToDo(item);
         clearForm();
     }
 }
@@ -94,6 +106,7 @@ function getInput(id):HTMLInputElement {
     return <HTMLInputElement>document.getElementById(id);
 }
 
+
 /**
  * Display given ToDoItem on the web page
  * @param item ToDoItem
@@ -109,22 +122,25 @@ function displayToDoItem(item:ToDoItem) {
 
     // Create the title of the task
     let itemText = document.createElement("h3");
-    itemText.className = "todo-title"
+    itemText.id = "item-text";
     itemText.innerText = item.title;
 
-    // Create the due date
+    // Create the due date and print the due date
     let itemDate = document.createElement("p");
     itemDate.innerText = item.dueDate.toString();
+    let dueDate = new Date(item.dueDate.toString());
+    itemDate.innerText = dueDate.toDateString();
 
     // Create a div for incomplete and completed tasks
     let itemDiv = document.createElement("div");
-    itemDiv.id = "itemDivId";
+    itemDiv.id = "taskId";
+    itemDiv.setAttribute("data-todo-title", item.title);
+    itemDiv.ondblclick = toggleComplete;
+
     itemDiv.classList.add("todo");
     if(item.isCompleted) {
         itemDiv.classList.add("completed");
     }
-
-    itemText.onclick = markAsComplete;
 
     // Add the task to the completed div and incomplete div
     itemDiv.appendChild(itemText);
@@ -137,44 +153,86 @@ function displayToDoItem(item:ToDoItem) {
     }
 
     else {
-        let incompleteTasks = document.getElementById("incompleted-items");
+        let incompleteTasks = document.getElementById("uncompleted-items");
         incompleteTasks.appendChild(itemDiv);
     }
 }
 
-// Allow user to mark a ToDoItem as completed
-function markAsComplete() {
-    let itemDiv = getInput("itemDivId");
-    itemDiv.classList.add("completed");
+/***
+ * If an uncompleted task was clicked, it will be marked as complete.
+ */
+function toggleComplete() {
+    let itemDiv = <HTMLDivElement>this;
 
-    let completedItems = document.getElementById("complete-items");
-    completedItems.appendChild(itemDiv);
+    if(itemDiv.classList.contains("completed")) {
+        // Add the clicked task to to do
+        itemDiv.classList.remove("completed");
+        let incompleteItems = getInput("uncompleted-items");
+        incompleteItems.appendChild(itemDiv);
+    }
+
+    else {
+        // Add complete tasks to completed 
+        itemDiv.classList.add("completed");
+        let completedItems = getInput("complete-items");
+        completedItems.appendChild(itemDiv);
+    }
+
+    let allTodos = getToDoItems();
+    let currentTodoTitle = itemDiv.getAttribute("data-todo-title");
+    for(let index = 0; index < allTodos.length; index++){
+        let nextTodo = allTodos[index]; // Get ToDo out of array
+        if(nextTodo.title == currentTodoTitle){
+            nextTodo.isCompleted = !nextTodo.isCompleted; // Flip complete/incomplete
+        }
+    }
+
+    saveAllTasks(allTodos);  // Re-save into storage
+}
+
+/**
+ * Clear all current tasks from storage
+ * and save a new array
+ * @param allTodos all tasks
+ */
+
+function saveAllTasks(allTodos: ToDoItem[]) {
+    // clear the current array
+    localStorage.setItem(todokey, "");
+    let allItemsString = JSON.stringify(allTodos); // Get new storage string with all Todos
+    localStorage.setItem(todokey, allItemsString);
+}
+
+function saveToDo(item:ToDoItem) {
+    let currItems = getToDoItems();
+    if(currItems == null){ // No items found
+        currItems = new Array();
+    }
+    currItems.push(item); // Add the new item to the curr item list
+
+    let currItemsString = JSON.stringify(currItems);
+    localStorage.setItem(todokey, currItemsString);
 }
 
 function editTask() {
-    // Get the curr to do item
-    let itemDiv = getInput("itemDivId");
+    let itemDiv = <HTMLDivElement>this;
+    let title = getInput("item-text").value;
+    let titleBox = getInput("title");
 
-    // Remove buttons of already created
-    if(getInput("delete-todo")) {
-        let deleteBtn = getInput("delete-todo");
-        deleteBtn.remove();
-    }
-
-    let deleteBtn = document.createElement("button");
-    deleteBtn.innerHTML = "Delete";
-    deleteBtn.className = "delete-todo";
-    deleteBtn.id = "delete-todo";
-    itemDiv.appendChild(deleteBtn);
-    
-    
+    titleBox.value = title;
     
 }
 
-function markToDo() {
-    let itemDiv = getInput("itemDivId");
-    itemDiv.classList.add("todo");
+function deleteItem() {
+    let itemDiv = getInput("taskId");
 
-    let incompletedItems = document.getElementById("incompleted-items");
-    incompletedItems.appendChild(itemDiv);
+    itemDiv.classList.remove("todo");
+}
+
+const todokey = "todo";
+
+function getToDoItems():ToDoItem[] {
+    let itemString = localStorage.getItem(todokey);
+    let item:ToDoItem[] = JSON.parse(itemString);
+    return item;
 }
