@@ -9,9 +9,8 @@ function loadSavedItems() {
     let itemArray = getToDoItems();
 
     if(itemArray != null) {
-        for(let i = 0; i < itemArray.length; i++) {
-            let currItem = itemArray[i];
-            displayToDoItem(currItem);
+        for(let i = 0; i < itemArray.length; i++){
+            displayToDoItem(itemArray[i]);
         }
     }
 }
@@ -31,12 +30,6 @@ class ToDoItem {
     dueDate:Date;
     isCompleted:boolean;
 }
-
-let item = new ToDoItem();
-// item.title = "Testing";
-item.dueDate = new Date(2021, 6, 1);
-item.isCompleted = false;
-
 
 /**
  * Clear the form when an item has been added
@@ -112,14 +105,6 @@ function getInput(id):HTMLInputElement {
  * @param item ToDoItem
  */
 function displayToDoItem(item:ToDoItem) {
-    // Create an edit button
-    let editBtn = document.createElement("button");
-    editBtn.innerHTML = "Edit";
-    editBtn.className = "edit-button";
-
-    // Call editTask() if editbtn was clicked
-    editBtn.onclick = editTask;
-
     // Create the title of the task
     let itemText = document.createElement("h3");
     itemText.id = "item-text";
@@ -135,7 +120,7 @@ function displayToDoItem(item:ToDoItem) {
     let itemDiv = document.createElement("div");
     itemDiv.id = "taskId";
     itemDiv.setAttribute("data-todo-title", item.title);
-    itemDiv.ondblclick = toggleComplete;
+    itemDiv.onclick = toggleComplete;
 
     itemDiv.classList.add("todo");
     if(item.isCompleted) {
@@ -145,7 +130,6 @@ function displayToDoItem(item:ToDoItem) {
     // Add the task to the completed div and incomplete div
     itemDiv.appendChild(itemText);
     itemDiv.appendChild(itemDate);
-    itemDiv.appendChild(editBtn);
 
     if(item.isCompleted) {
         let completedTask = document.getElementById("complete-items");
@@ -205,7 +189,7 @@ function saveAllTasks(allTodos: ToDoItem[]) {
 
 function saveToDo(item:ToDoItem) {
     let currItems = getToDoItems();
-    if(currItems == null){ // No items found
+    if(currItems == null) { // No items found
         currItems = new Array();
     }
     currItems.push(item); // Add the new item to the curr item list
@@ -213,26 +197,23 @@ function saveToDo(item:ToDoItem) {
     let currItemsString = JSON.stringify(currItems);
     localStorage.setItem(todokey, currItemsString);
 }
-
-function editTask() {
-    let itemDiv = <HTMLDivElement>this;
-    let title = getInput("item-text").value;
-    let titleBox = getInput("title");
-
-    titleBox.value = title;
-    
-}
-
-function deleteItem() {
-    let itemDiv = getInput("taskId");
-
-    itemDiv.classList.remove("todo");
-}
-
 const todokey = "todo";
 
 function getToDoItems():ToDoItem[] {
     let itemString = localStorage.getItem(todokey);
     let item:ToDoItem[] = JSON.parse(itemString);
     return item;
+}
+
+function clearAllTasks() {
+    let quit = confirm("Are you sure you want to clear all tasks?");
+
+    if(quit) {
+        let uncompletedTasks = document.getElementById("uncompleted-items");
+        let completedTasks = document.getElementById("complete-items");
+
+        uncompletedTasks.innerHTML = "";
+        completedTasks.innerHTML = "";
+        localStorage.clear();
+    }
 }
